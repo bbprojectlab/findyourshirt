@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#E8193C">
+<title>BB Project Lab</title>
+<style>
+  :root { --red: #E8193C; --white: #FFFFFF; --pink: #FF69B4; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--red);
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    touch-action: manipulation;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    background: var(--red);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen.active { display: flex; }
+
+  .screen-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: max(52px, env(safe-area-inset-top)) 24px max(32px, env(safe-area-inset-bottom));
+    min-height: 100%;
+  }
+
+  .big-title {
+    font-size: clamp(40px, 12vw, 62px);
+    font-weight: 900;
+    color: var(--white);
+    text-align: left;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  .big-title em { font-style: normal; color: rgba(255,255,255,0.4); }
+
+  .tshirt-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 180px;
+  }
+
+  .bottom-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding-top: 4px;
+  }
+
+  .dots { display: flex; gap: 8px; justify-content: center; }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transition: all 0.25s;
+  }
+  .dot.done { background: rgba(255,255,255,0.65); }
+  .dot.active { background: var(--pink); width: 22px; border-radius: 4px; }
+
+  .cta-btn {
+    width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    border: none;
+    background: var(--white);
+    color: var(--red);
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: transform 0.12s;
+    opacity: 0;
+    pointer-events: none;
+    min-height: 60px;
+  }
+  .cta-btn.show, .cta-btn.always { opacity: 1; pointer-events: all; }
+  .cta-btn:active { transform: scale(0.97); }
+  .cta-btn.ghost {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75);
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+
+  .options-wrap {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .opt-card {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid transparent;
+    border-radius: 18px;
+    padding: 18px 10px 14px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 118px;
+    justify-content: center;
+    user-select: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .opt-card:active { transform: scale(0.95); }
+  .opt-card.selected { border-color: var(--white); background: rgba(255,255,255,0.18); }
+
+  .opt-label { font-size: 14px; font-weight: 800; color: var(--white); text-transform: uppercase; letter-spacing: 0.07em; }
+  .opt-sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.02em; }
+
+  .swatch { width: 54px; height: 54px; border-radius: 13px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.18); }
+
+  .bead-row { display: flex; gap: 5px; align-items: center; justify-content: center; height: 54px; }
+  .bead { width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+
+  .res-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.12em; text-align: center; margin-top: 8px; }
+  .share-hint { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  @keyframes up { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .screen.active .screen-inner { animation: up 0.28s ease; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="s0">
+  <div class="screen-inner">
+    <p class="big-title">come<br>vuoi<br>le<br>tette<br>oggi?</p>
+    <div class="tshirt-area">
+      <svg width="min(210px,55vw)" height="min(230px,60vw)" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="36,60 4,16 0,66 36,88" fill="rgba(255,255,255,0.9)"/>
+        <polygon points="164,60 196,16 200,66 164,88" fill="rgba(255,255,255,0.9)"/>
+        <rect x="36" y="60" width="128" height="152" rx="6" fill="rgba(255,255,255,0.9)"/>
+        <path d="M68,60 Q100,80 132,60" fill="none" stroke="rgba(210,200,190,0.7)" stroke-width="2"/>
+        <text x="100" y="142" text-anchor="middle" font-size="36" fill="rgba(232,25,60,0.1)">★</text>
+      </svg>
+    </div>
+    <div class="bottom-area">
+      <button class="cta-btn always" onclick="go('s1')">inizia ★</button>
+      <div class="dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s1">
+  <div class="screen-inner">
+    <p class="big-title">che<br>tessuto<br><em>vuoi?</em></p>
+    <div class="options-wrap">
+      <div class="options-grid">
+
+        <div class="opt-card" onclick="pick('f','cotone',this)">
+          <div class="swatch">
+            <svg width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+              <rect width="54" height="54" fill="#F2EDE4"/>
+              <line x1="0" y1="9" x2="54" y2="9" stroke="#D8CEBC" stroke-width="1.2"/>
+              <line x1="0" y1="18" x2="54" y2="18" stroke="#D8CEBC" stroke-width="1.2"/>
+              <line x1="0" y1="27" x2="54" y2="27" stroke="#D8CEBC" stroke-width="1.2"/>
+              <line x1="0" y1="36" x2="54" y2="36" stroke="#D8CEBC" stroke-width="1.2"/>
+              <line x1="0" y1="45" x2="54" y2="45" stroke="#D8CEBC" stroke-width="1.2"/>
+              <line x1="9" y1="0" x2="9" y2="54" stroke="#D8CEBC" stroke-width="0.6"/>
+              <line x1="18" y1="0" x2="18" y2="54" stroke="#D8CEBC" stroke-width="0.6"/>
+              <line x1="27" y1="0" x2="27" y2="54" stroke="#D8CEBC" stroke-width="0.6"/>
+              <line x1="36" y1="0" x2="36" y2="54" stroke="#D8CEBC" stroke-width="0.6"/>
+              <line x1="45" y1="0" x2="45" y2="54" stroke="#D8CEBC" stroke-width="0.6"/>
+            </svg>
+          </div>
+          <span class="opt-label">cotone</span>
+          <span class="opt-sub">morbido, classico</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('f','raso',this)">
+          <div class="swatch">
+            <svg width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+              <rect width="54" height="54" fill="#B8A0D0"/>
+              <path d="M-10,0 L64,54" stroke="rgba(255,255,255,0.45)" stroke-width="22"/>
+              <path d="M-30,0 L44,54" stroke="rgba(255,255,255,0.12)" stroke-width="10"/>
+              <path d="M10,0 L84,54" stroke="rgba(255,255,255,0.12)" stroke-width="10"/>
+            </svg>
+          </div>
+          <span class="opt-label">raso</span>
+          <span class="opt-sub">lucido, elegante</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('f','velluto',this)">
+          <div class="swatch">
+            <svg width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+              <rect width="54" height="54" fill="#1C0F2E"/>
+              <circle cx="9" cy="9" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="27" cy="5" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="45" cy="9" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="3" cy="22" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="18" cy="20" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="36" cy="20" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="51" cy="22" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="9" cy="36" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="27" cy="34" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="45" cy="36" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="3" cy="49" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="18" cy="49" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+              <circle cx="36" cy="49" r="2.5" fill="#3A1E5C" opacity="0.9"/>
+            </svg>
+          </div>
+          <span class="opt-label">velluto</span>
+          <span class="opt-sub">ricco, sensuale</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('f','pizzo',this)">
+          <div class="swatch">
+            <svg width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+              <rect width="54" height="54" fill="#FFF0F5"/>
+              <circle cx="14" cy="14" r="5" fill="none" stroke="#FFAACC" stroke-width="1.5"/>
+              <circle cx="40" cy="14" r="5" fill="none" stroke="#FFAACC" stroke-width="1.5"/>
+              <circle cx="14" cy="40" r="5" fill="none" stroke="#FFAACC" stroke-width="1.5"/>
+              <circle cx="40" cy="40" r="5" fill="none" stroke="#FFAACC" stroke-width="1.5"/>
+              <circle cx="27" cy="27" r="5" fill="none" stroke="#FFAACC" stroke-width="1.5"/>
+              <line x1="14" y1="14" x2="27" y2="27" stroke="#FFAACC" stroke-width="1"/>
+              <line x1="40" y1="14" x2="27" y2="27" stroke="#FFAACC" stroke-width="1"/>
+              <line x1="14" y1="40" x2="27" y2="27" stroke="#FFAACC" stroke-width="1"/>
+              <line x1="40" y1="40" x2="27" y2="27" stroke="#FFAACC" stroke-width="1"/>
+            </svg>
+          </div>
+          <span class="opt-label">pizzo</span>
+          <span class="opt-sub">delicato, romantico</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="bottom-area">
+      <button class="cta-btn" id="bf" onclick="go('s2')">avanti →</button>
+      <div class="dots">
+        <div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="screen-inner">
+    <p class="big-title">che<br>colore<br><em>le perline?</em></p>
+    <div class="options-wrap">
+      <div class="options-grid">
+
+        <div class="opt-card" onclick="pick('b','oro',this)">
+          <div class="bead-row">
+            <div class="bead" style="background:linear-gradient(135deg,#FFE87A,#C8900A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFE87A,#C8900A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFE87A,#C8900A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFE87A,#C8900A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFE87A,#C8900A);"></div>
+          </div>
+          <span class="opt-label">oro</span>
+          <span class="opt-sub">caldo, prezioso</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('b','argento',this)">
+          <div class="bead-row">
+            <div class="bead" style="background:linear-gradient(135deg,#F0F0F0,#909090);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#F0F0F0,#909090);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#F0F0F0,#909090);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#F0F0F0,#909090);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#F0F0F0,#909090);"></div>
+          </div>
+          <span class="opt-label">argento</span>
+          <span class="opt-sub">freddo, minimal</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('b','rosa',this)">
+          <div class="bead-row">
+            <div class="bead" style="background:linear-gradient(135deg,#FFB3D1,#E0508A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFB3D1,#E0508A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFB3D1,#E0508A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFB3D1,#E0508A);"></div>
+            <div class="bead" style="background:linear-gradient(135deg,#FFB3D1,#E0508A);"></div>
+          </div>
+          <span class="opt-label">rosa</span>
+          <span class="opt-sub">dolce, femminile</span>
+        </div>
+
+        <div class="opt-card" onclick="pick('b','multi',this)">
+          <div class="bead-row">
+            <div class="bead" style="background:#FF6B6B;"></div>
+            <div class="bead" style="background:#FFD93D;"></div>
+            <div class="bead" style="background:#6BCB77;"></div>
+            <div class="bead" style="background:#4D96FF;"></div>
+            <div class="bead" style="background:#C77DFF;"></div>
+          </div>
+          <span class="opt-label">multicolor</span>
+          <span class="opt-sub">vivace, unico</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="bottom-area">
+      <button class="cta-btn" id="bb" onclick="showResult()">scopri la tua maglia ★</button>
+      <div class="dots">
+        <div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="screen-inner">
+    <p class="big-title">la tua<br>maglia<br><em>bb ★</em></p>
+    <div class="tshirt-area">
+      <div id="rt" style="width:min(210px,54vw); aspect-ratio:200/225;"></div>
+    </div>
+    <p class="res-name" id="rn"></p>
+    <div class="bottom-area" style="margin-top:14px;">
+      <p class="share-hint">★ condividi nelle storie ★</p>
+      <button class="cta-btn always ghost" onclick="restart()">rifai il quiz</button>
+      <div class="dots">
+        <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ch = {};
+
+const FC = {
+  cotone:  ['#F2EDE4','#E6DFD2','#D6CFC0'],
+  raso:    ['#C0ABDC','#B098CC','#A088BC'],
+  velluto: ['#1C0F2E','#160B24','#0E071A'],
+  pizzo:   ['#FFF0F5','#FFE4EE','#FFD0E4']
+};
+
+const BC = {
+  oro:     [['#FFE87A','#C8900A'],['#FFE87A','#C8900A'],['#FFE87A','#C8900A'],['#FFE87A','#C8900A'],['#FFE87A','#C8900A']],
+  argento: [['#F0F0F0','#909090'],['#F0F0F0','#909090'],['#F0F0F0','#909090'],['#F0F0F0','#909090'],['#F0F0F0','#909090']],
+  rosa:    [['#FFB3D1','#E0508A'],['#FFB3D1','#E0508A'],['#FFB3D1','#E0508A'],['#FFB3D1','#E0508A'],['#FFB3D1','#E0508A']],
+  multi:   [['#FF6B6B','#CC2020'],['#FFD93D','#CC8800'],['#6BCB77','#228830'],['#4D96FF','#1050CC'],['#C77DFF','#7020CC']]
+};
+
+const NM = {
+  cotone:  {oro:'cotton gold',argento:'cotton ice',rosa:'cotton candy',multi:'cotton rainbow'},
+  raso:    {oro:'satin glam', argento:'satin moon', rosa:'satin rose',  multi:'satin dream'},
+  velluto: {oro:'velvet gold',argento:'velvet dark',rosa:'velvet pink', multi:'velvet party'},
+  pizzo:   {oro:'lace gold',  argento:'lace frost', rosa:'lace love',   multi:'lace pop'}
+};
+
+function pick(type, val, el) {
+  ch[type] = val;
+  el.closest('.screen').querySelectorAll('.opt-card').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById(type === 'f' ? 'bf' : 'bb').classList.add('show');
+}
+
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showResult() {
+  if (!ch.f || !ch.b) return;
+  const fc = FC[ch.f];
+  const bc = BC[ch.b];
+  const bx = [68,84,100,116,132];
+  const defs = bc.map((c,i) => `<linearGradient id="g${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${c[0]}"/><stop offset="100%" stop-color="${c[1]}"/></linearGradient>`).join('');
+  const beads = bc.map((c,i) => `<circle cx="${bx[i]}" cy="160" r="6.5" fill="url(#g${i})" stroke="rgba(255,255,255,0.35)" stroke-width="1.2"/>`).join('');
+  const sc = fc[0] === '#1C0F2E' ? 'rgba(255,255,255,0.07)' : 'rgba(232,25,60,0.09)';
+  document.getElementById('rt').innerHTML = `<svg width="100%" height="100%" viewBox="0 0 200 225" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs><polygon points="36,60 4,16 0,66 36,88" fill="${fc[1]}"/><polygon points="164,60 196,16 200,66 164,88" fill="${fc[1]}"/><rect x="36" y="60" width="128" height="157" rx="6" fill="${fc[0]}"/><path d="M68,60 Q100,80 132,60" fill="none" stroke="${fc[2]}" stroke-width="2"/><text x="100" y="148" text-anchor="middle" font-size="40" fill="${sc}">★</text>${beads}</svg>`;
+  document.getElementById('rn').textContent = (NM[ch.f][ch.b] + ' ★').toUpperCase();
+  go('s3');
+}
+
+function restart() {
+  ch.f = null; ch.b = null;
+  document.querySelectorAll('.opt-card').forEach(o => o.classList.remove('selected'));
+  ['bf','bb'].forEach(id => document.getElementById(id).classList.remove('show'));
+  go('s0');
+}
+</script>
+</body>
+</html>
