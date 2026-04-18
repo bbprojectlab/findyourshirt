@@ -14,33 +14,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .inner{flex:1;display:flex;flex-direction:column;align-items:center;padding:max(52px,env(safe-area-inset-top)) 24px max(32px,env(safe-area-inset-bottom));min-height:100%;}
 .brand-name{font-size:clamp(40px,12vw,64px);font-weight:900;color:var(--dark);letter-spacing:-0.03em;line-height:0.92;text-transform:uppercase;width:100%;}
 .brand-sub{font-size:14px;color:var(--mid);font-weight:400;letter-spacing:0.04em;margin-top:8px;}
-.stars-row{font-size:20px;color:var(--red);letter-spacing:6px;margin-top:6px;}
+.stars-row{font-size:20px;color:var(--red);letter-spacing:8px;margin-top:6px;}
 .intro-img{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:16px 0;}
 .intro-img img{width:min(260px,65vw);filter:drop-shadow(0 8px 24px rgba(0,0,0,0.18));}
 .start-btn{width:100%;padding:20px;border-radius:16px;border:none;background:var(--red);color:var(--white);font-size:16px;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:0.1em;transition:transform .12s;}
 .start-btn:active{transform:scale(0.97);}
 .step-title{font-size:clamp(28px,8vw,42px);font-weight:900;color:var(--dark);text-align:left;width:100%;line-height:1;letter-spacing:-0.02em;text-transform:uppercase;margin-bottom:4px;}
 .step-sub{font-size:11px;color:var(--mid);letter-spacing:0.06em;text-transform:uppercase;width:100%;margin-bottom:18px;}
-.garment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-bottom:16px;}
-.garment-card{background:var(--white);border:2px solid transparent;border-radius:16px;padding:16px 8px 12px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .15s;user-select:none;}
+.garment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;flex:1;align-content:center;}
+.garment-card{background:var(--red);border:2px solid transparent;border-radius:16px;padding:16px 8px 12px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .15s;user-select:none;}
 .garment-card:active{transform:scale(0.95);}
-.garment-card.selected{border-color:var(--red);}
-.garment-card img{width:100%;max-width:90px;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.15));}
-.garment-label{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.06em;}
-.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-bottom:16px;}
-.color-card{background:var(--white);border:2px solid transparent;border-radius:16px;padding:14px 8px 10px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .15s;user-select:none;}
+.garment-card.selected{border-color:var(--white);box-shadow:0 0 0 2px var(--white);}
+.garment-card img{width:100%;max-width:90px;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.25));}
+.garment-label{font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:0.06em;}
+.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;flex:1;align-content:center;}
+.color-card{background:var(--white);border:2px solid transparent;border-radius:16px;padding:12px 8px 10px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .15s;user-select:none;}
 .color-card:active{transform:scale(0.95);}
 .color-card.selected{border-color:var(--red);}
-.color-swatch{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);}
+.color-card img{width:100%;max-width:80px;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.15));}
 .color-label{font-size:11px;font-weight:600;color:var(--dark);text-transform:uppercase;letter-spacing:0.05em;}
-.fabric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;margin-bottom:16px;}
+.fabric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;flex:1;align-content:center;}
 .fabric-card{background:var(--white);border:2px solid transparent;border-radius:16px;padding:14px 12px 12px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;user-select:none;}
 .fabric-card:active{transform:scale(0.97);}
 .fabric-card.selected{border-color:var(--red);}
 .fabric-swatch{width:48px;height:48px;border-radius:10px;flex-shrink:0;border:1px solid rgba(0,0,0,0.06);overflow:hidden;}
 .fabric-name{font-size:12px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:0.05em;}
 .fabric-desc{font-size:10px;color:var(--mid);margin-top:2px;}
-.bead-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;margin-bottom:16px;}
+.bead-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;flex:1;align-content:center;}
 .bead-card{background:var(--white);border:2px solid transparent;border-radius:14px;padding:14px 6px 10px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .15s;user-select:none;}
 .bead-card:active{transform:scale(0.95);}
 .bead-card.selected{border-color:var(--red);}
@@ -51,7 +51,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .star-overlay{position:absolute;z-index:2;pointer-events:none;}
 .result-name{font-size:clamp(20px,5vw,28px);font-weight:900;color:var(--dark);text-transform:uppercase;letter-spacing:-0.02em;text-align:center;line-height:1;}
 .result-combo{font-size:11px;color:var(--mid);text-align:center;letter-spacing:0.06em;text-transform:uppercase;margin-top:6px;}
-.bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:4px;}
+.bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:8px;margin-top:auto;}
 .next-btn{width:100%;padding:18px;border-radius:14px;border:none;background:var(--dark);color:var(--white);font-size:15px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:0.1em;opacity:0;pointer-events:none;transition:transform .12s;min-height:56px;}
 .next-btn.show{opacity:1;pointer-events:all;}
 .next-btn:active{transform:scale(0.97);}
@@ -73,7 +73,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <div style="width:100%;margin-bottom:8px;">
       <div class="brand-name">BB<br>Project<br>Lab</div>
       <div class="brand-sub">per tette stellari</div>
-      <div class="stars-row">★ ★ ★</div>
+      <div class="stars-row">★ ★</div>
     </div>
     <div class="intro-img">
       <img src="img/t-shirt_bianco.png" alt="BB Project Lab">
@@ -148,7 +148,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
         <div><div class="fabric-name">Arancione</div><div class="fabric-desc">vivace e caldo</div></div>
       </div>
       <div class="fabric-card" onclick="pick('fabric','red_leopard',this)">
-        <div class="fabric-swatch" style="position:relative;">
+        <div class="fabric-swatch">
           <svg width="48" height="48" viewBox="0 0 48 48" style="display:block;border-radius:10px;">
             <rect width="48" height="48" fill="#C8202A"/>
             <ellipse cx="10" cy="10" rx="4" ry="3" fill="#8B0000" opacity="0.7"/>
@@ -223,14 +223,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <div class="result-img-wrap" id="result-wrap">
       <img id="result-img" src="" alt="la tua maglia">
       <svg id="star-svg" class="star-overlay" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-        <text id="star-text" x="40" y="56" text-anchor="middle" font-size="52">★</text>
+        <text id="star-text" x="40" y="56" text-anchor="middle" font-size="52">&#9733;</text>
         <g id="bead-group"></g>
       </svg>
     </div>
     <p class="result-name" id="res-name"></p>
     <p class="result-combo" id="res-combo"></p>
     <div class="bottom" style="margin-top:16px;">
-      <p class="share-hint">★ condividi nelle storie ★</p>
+      <p class="share-hint">&#9733; condividi nelle storie &#9733;</p>
       <button class="next-btn red show" onclick="restart()">rifai il quiz</button>
       <div class="dots">
         <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div>
@@ -242,96 +242,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <script>
 const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentColors={
-  canotta:[{key:'bianco',label:'bianco',img:'img/canotta.png',swatch:'#F8F8F4'}],
-  top:[{key:'bianco',label:'bianco',img:'img/top_bianco.png',swatch:'#F8F8F4'},{key:'nero',label:'nero',img:'img/top_nero.png',swatch:'#1C1C1C'}],
-  tshirt:[{key:'bianco',label:'bianco',img:'img/t-shirt_bianco.png',swatch:'#F8F8F4'},{key:'blu',label:'blu',img:'img/t-shirt_blu.png',swatch:'#2B5080'},{key:'rosso',label:'rosso',img:'img/t-shirt_rosso.png',swatch:'#CC1020'}]
+  canotta:[{key:'bianco',label:'bianco',img:'img/canotta.png'}],
+  top:[{key:'bianco',label:'bianco',img:'img/top_bianco.png'},{key:'nero',label:'nero',img:'img/top_nero.png'}],
+  tshirt:[{key:'bianco',label:'bianco',img:'img/t-shirt_bianco.png'},{key:'blu',label:'blu',img:'img/t-shirt_blu.png'},{key:'rosso',label:'rosso',img:'img/t-shirt_rosso.png'}]
 };
 const fabricColors={blue_jeans:'#3A6898',light_jeans:'#7AAAC8',argento:'#C0C0C0',arancione:'#E07020',red_leopard:'#C8202A'};
 const beadColors={bianco:'#E8E8E8',rosso:'#CC0000',turchese:'#20B2AA',fucsia:'#CC1477',oro:'#C8900A',argento:'#909090',rosa:'#E0508A'};
 const resultNames={canotta:'la tua canotta bb',top:'il tuo top bb',tshirt:'la tua t-shirt bb'};
-
-function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById(id).scrollTop=0;
-}
-function pick(type,val,el){
-  ch[type]=val;
-  el.closest('.screen').querySelectorAll('.fabric-card,.bead-card').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById(type==='fabric'?'btn3':'btn4').classList.add('show');
-}
-function pickGarment(val,el){
-  ch.garment=val;ch.color=null;
-  document.querySelectorAll('.garment-card').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('btn1').classList.add('show');
-}
-function afterGarment(){
-  if(!ch.garment)return;
-  const colors=garmentColors[ch.garment];
-  if(colors.length===1){ch.color=colors[0].key;go('s3');}
-  else{buildColorOptions(colors);go('s2');}
-}
-function buildColorOptions(colors){
-  const grid=document.getElementById('color-options');
-  grid.innerHTML='';
-  colors.forEach(c=>{
-    const card=document.createElement('div');
-    card.className='color-card';
-    card.onclick=function(){pickColor(c.key,this);};
-    const border=c.key==='bianco'?'border:1.5px solid #DDD;':'';
-    card.innerHTML=`<div class="color-swatch" style="background:${c.swatch};${border}"></div><span class="color-label">${c.label}</span>`;
-    grid.appendChild(card);
-  });
-  document.getElementById('btn2').classList.remove('show');
-}
-function pickColor(key,el){
-  ch.color=key;
-  document.querySelectorAll('.color-card').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('btn2').classList.add('show');
-}
-function backFromFabric(){
-  const colors=garmentColors[ch.garment];
-  if(colors.length===1)go('s1');else go('s2');
-}
-function showResult(){
-  if(!ch.garment||!ch.fabric||!ch.bead)return;
-  const colors=garmentColors[ch.garment];
-  const colorKey=ch.color||colors[0].key;
-  const colorData=colors.find(c=>c.key===colorKey)||colors[0];
-  const img=document.getElementById('result-img');
-  img.src=colorData.img;
-  document.getElementById('star-text').setAttribute('fill',fabricColors[ch.fabric]);
-  const bg=document.getElementById('bead-group');
-  bg.innerHTML='';
-  [22,32,40,48,58].forEach(x=>{
-    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx',x);c.setAttribute('cy',68);c.setAttribute('r',4);
-    c.setAttribute('fill',beadColors[ch.bead]);
-    c.setAttribute('stroke','rgba(255,255,255,0.4)');c.setAttribute('stroke-width','0.8');
-    bg.appendChild(c);
-  });
-  const svg=document.getElementById('star-svg');
-  function positionStar(){
-    const iw=img.offsetWidth,ih=img.offsetHeight;
-    svg.style.width=(iw*0.38)+'px';svg.style.height=(iw*0.38)+'px';
-    svg.style.left=(img.offsetLeft+iw*0.31)+'px';
-    svg.style.top=(img.offsetTop+ih*0.34)+'px';
-  }
-  img.onload=positionStar;
-  if(img.complete)positionStar();
-  document.getElementById('res-name').textContent=resultNames[ch.garment].toUpperCase();
-  document.getElementById('res-combo').textContent=ch.fabric.replace('_',' ')+' + perline '+ch.bead;
-  go('s5');
-}
-function restart(){
-  ch.garment=null;ch.color=null;ch.fabric=null;ch.bead=null;
-  document.querySelectorAll('.garment-card,.color-card,.fabric-card,.bead-card').forEach(o=>o.classList.remove('selected'));
-  ['btn1','btn2','btn3','btn4'].forEach(id=>document.getElementById(id).classList.remove('show'));
-  go('s0');
-}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.getElementById(id).scrollTop=0;}
+function pick(type,val,el){ch[type]=val;el.closest('.screen').querySelectorAll('.fabric-card,.bead-card').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById(type==='fabric'?'btn3':'btn4').classList.add('show');}
+function pickGarment(val,el){ch.garment=val;ch.color=null;document.querySelectorAll('.garment-card').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn1').classList.add('show');}
+function afterGarment(){if(!ch.garment)return;const colors=garmentColors[ch.garment];if(colors.length===1){ch.color=colors[0].key;go('s3');}else{buildColorOptions(colors);go('s2');}}
+function buildColorOptions(colors){const grid=document.getElementById('color-options');grid.innerHTML='';colors.forEach(c=>{const card=document.createElement('div');card.className='color-card';card.onclick=function(){pickColor(c.key,this);};card.innerHTML='<img src="'+c.img+'" alt="'+c.label+'"><span class="color-label">'+c.label+'</span>';grid.appendChild(card);});document.getElementById('btn2').classList.remove('show');}
+function pickColor(key,el){ch.color=key;document.querySelectorAll('.color-card').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn2').classList.add('show');}
+function backFromFabric(){const colors=garmentColors[ch.garment];if(colors.length===1)go('s1');else go('s2');}
+function showResult(){if(!ch.garment||!ch.fabric||!ch.bead)return;const colors=garmentColors[ch.garment];const colorKey=ch.color||colors[0].key;const colorData=colors.find(c=>c.key===colorKey)||colors[0];const img=document.getElementById('result-img');img.src=colorData.img;document.getElementById('star-text').setAttribute('fill',fabricColors[ch.fabric]);const bg=document.getElementById('bead-group');bg.innerHTML='';[22,32,40,48,58].forEach(x=>{const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',x);c.setAttribute('cy',68);c.setAttribute('r',4);c.setAttribute('fill',beadColors[ch.bead]);c.setAttribute('stroke','rgba(255,255,255,0.4)');c.setAttribute('stroke-width','0.8');bg.appendChild(c);});const svg=document.getElementById('star-svg');function positionStar(){const iw=img.offsetWidth,ih=img.offsetHeight;svg.style.width=(iw*0.38)+'px';svg.style.height=(iw*0.38)+'px';svg.style.left=(img.offsetLeft+iw*0.31)+'px';svg.style.top=(img.offsetTop+ih*0.34)+'px';}img.onload=positionStar;if(img.complete)positionStar();document.getElementById('res-name').textContent=resultNames[ch.garment].toUpperCase();document.getElementById('res-combo').textContent=ch.fabric.replace('_',' ')+' + perline '+ch.bead;go('s5');}
+function restart(){ch.garment=null;ch.color=null;ch.fabric=null;ch.bead=null;document.querySelectorAll('.garment-card,.color-card,.fabric-card,.bead-card').forEach(o=>o.classList.remove('selected'));['btn1','btn2','btn3','btn4'].forEach(id=>document.getElementById(id).classList.remove('show'));go('s0');}
 </script>
 </body>
 </html>
