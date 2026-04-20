@@ -211,7 +211,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <p class="result-name" id="res-name"></p>
     <p class="result-combo" id="res-combo"></p>
     <div class="bottom" style="margin-top:12px;">
-      <button class="next-btn red show" id="share-btn" onclick="shareToStories()">&#9733; condividi nelle storie</button>
+      <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; salva il tuo capo bb project lab</button>
       <button class="next-btn outline" onclick="restart()">rifai il quiz</button>
       <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
     </div>
@@ -270,14 +270,27 @@ const FORM_FIELDS = {
 };
 
 function submitToForm(){
-  if(FORM_URL==='INSERISCI_QUI_URL_GOOGLE_FORM') return;
   try {
-    const url=new URL(FORM_URL);
-    url.searchParams.set(FORM_FIELDS.capo, ch.garment||'');
-    url.searchParams.set(FORM_FIELDS.colore, ch.color||'');
-    url.searchParams.set(FORM_FIELDS.tessuto, ch.fabric||'');
-    url.searchParams.set(FORM_FIELDS.perline, ch.bead||'');
-    fetch(url.toString().replace('/viewform','/formResponse'),{method:'POST',mode:'no-cors'}).catch(()=>{});
+    const base='https://docs.google.com/forms/d/e/1FAIpQLSe9DwAHB4ETGQHyTfBjqO4vCrrCS8YwXZCtJYlyYykpq2bnIw/formResponse';
+    const params=new URLSearchParams();
+    params.set('entry.305141719', ch.garment||'');
+    params.set('entry.1875587845', ch.color||'');
+    params.set('entry.1839610412', ch.fabric||'');
+    params.set('entry.1828558303', ch.bead||'');
+    params.set('submit','Submit');
+    let iframe=document.getElementById('form-iframe');
+    if(!iframe){iframe=document.createElement('iframe');iframe.id='form-iframe';iframe.name='form-iframe';iframe.style.display='none';document.body.appendChild(iframe);}
+    let form=document.getElementById('form-hidden');
+    if(form) form.remove();
+    form=document.createElement('form');
+    form.id='form-hidden';
+    form.method='POST';
+    form.action=base;
+    form.target='form-iframe';
+    form.style.display='none';
+    params.forEach((v,k)=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;form.appendChild(i);});
+    document.body.appendChild(form);
+    form.submit();
   } catch(e){}
 }
 
@@ -482,39 +495,64 @@ function showResult(){
   go('s5');
 }
 
-function shareToStories(){
-  const canvas=document.getElementById('result-canvas');
+function saveStoryImage(){
   const garmentImg=document.getElementById('result-img');
-  // Create a full canvas with garment + stars
-  const finalCanvas=document.createElement('canvas');
-  finalCanvas.width=garmentImg.naturalWidth||garmentImg.offsetWidth;
-  finalCanvas.height=garmentImg.naturalHeight||garmentImg.offsetHeight;
-  const ctx=finalCanvas.getContext('2d');
-  // Draw garment
-  ctx.drawImage(garmentImg,0,0,finalCanvas.width,finalCanvas.height);
-  // Draw stars from result canvas scaled
-  ctx.drawImage(canvas,0,0,finalCanvas.width,finalCanvas.height);
+  const resultCanvas=document.getElementById('result-canvas');
 
+  // Story format 9:16
+  const storyW=1080;
+  const storyH=1920;
+  const finalCanvas=document.createElement('canvas');
+  finalCanvas.width=storyW;
+  finalCanvas.height=storyH;
+  const ctx=finalCanvas.getContext('2d');
+
+  // White background
+  ctx.fillStyle='#FFFFFF';
+  ctx.fillRect(0,0,storyW,storyH);
+
+  // Draw garment centered with shadow — garment takes ~55% of width
+  const gW=Math.round(storyW*0.55);
+  const gH=Math.round(gW*(garmentImg.naturalHeight/garmentImg.naturalWidth||1));
+  const gX=Math.round((storyW-gW)/2);
+  const gY=Math.round((storyH-gH)/2);
+
+  // Shadow
+  ctx.save();
+  ctx.shadowColor='rgba(0,0,0,0.18)';
+  ctx.shadowBlur=60;
+  ctx.shadowOffsetY=20;
+  ctx.drawImage(garmentImg,gX,gY,gW,gH);
+  ctx.restore();
+
+  // Draw stars from result-canvas scaled to same garment area
+  const rc=document.getElementById('result-canvas');
+  if(rc && rc.width>0){
+    ctx.drawImage(rc, gX, gY, gW, gH);
+  }
+
+  // bb project lab watermark bottom
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.font='bold 36px -apple-system, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('bb project lab ★', storyW/2, storyH-80);
+
+  // Download
   try {
     finalCanvas.toBlob(function(blob){
-      if(!blob) { fallbackShare(); return; }
-      const file=new File([blob],'bb-project-lab.png',{type:'image/png'});
-      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-        navigator.share({files:[file],title:'bb project lab'}).catch(()=>fallbackShare());
-      } else {
-        fallbackShare();
-      }
+      if(!blob) return;
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='bb-project-lab.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
     },'image/png');
-  } catch(e){ fallbackShare(); }
-}
-
-function fallbackShare(){
-  // Try Instagram deep link
-  const igUrl='instagram://story-camera';
-  window.location.href=igUrl;
-  setTimeout(()=>{
-    alert('Fai uno screenshot e condividilo nelle tue storie Instagram!');
-  },1500);
+  } catch(e){
+    alert('Fai uno screenshot per salvare la tua maglia!');
+  }
 }
 
 function restart(){
