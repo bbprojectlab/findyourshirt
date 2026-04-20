@@ -71,15 +71,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen active" id="s0">
   <div class="inner">
     <div style="width:100%;margin-bottom:8px;">
-      <div class="brand-name"><span style="text-transform:lowercase;">bb</span><br>PROJECT<br>LAB</div>
-      <div class="brand-sub">per tette stellari</div>
-      <div class="stars-row">&#9733; &#9733;</div>
+      <div class="brand-name">SCEGLI LE NUOVE<br>STAR COMBO<br>SS26</div>
+      
+      
     </div>
     <div class="intro-img">
       <img src="img/t-shirt_bianco_sp.png" alt="bb project lab">
     </div>
     <div class="bottom">
-      <button class="start-btn" onclick="go('s1')">crea la tua maglia &#9733;</button>
+      <button class="start-btn" onclick="go('s1')">CREA LA TUA STAR COMBO &#9733;</button>
     </div>
   </div>
 </div>
@@ -87,7 +87,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen" id="s1">
   <div class="inner">
     <div class="step-header">
-      <div><p class="step-title">che capo<br>vuoi?</p><p class="step-sub">scegli la tipologia</p></div>
+      <div><p class="step-title">COSA INDOSSEREI<br>QUESTA ESTATE?</p><p class="step-sub">SCEGLI IL MODELLO</p></div>
     </div>
     <div class="garment-grid">
       <div class="garment-card" onclick="pickGarment('canotta',this)">
@@ -113,7 +113,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen" id="s2">
   <div class="inner">
     <div class="step-header">
-      <div><p class="step-title">che colore<br>lo vuoi?</p><p class="step-sub">scegli il colore</p></div>
+      <div><p class="step-title">CHE COLORE<br>PREFERISCI?</p><p class="step-sub">scegli il colore</p></div>
       <div class="preview-box">
         <img class="prev-garment" id="prev2" src="" alt="preview">
       </div>
@@ -130,7 +130,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen" id="s3">
   <div class="inner">
     <div class="step-header">
-      <div><p class="step-title">che tessuto<br>la stella?</p><p class="step-sub">scegli il tessuto</p></div>
+      <div><p class="step-title">CHE TEXTURE AVRANNO<br>LE TUE STELLE?</p><p class="step-sub">scegli il tessuto</p></div>
       <div class="preview-box" id="prev-box3">
         <img class="prev-garment" id="prev3" src="" alt="preview">
         <span class="preview-star" id="pstar3a" style="display:none;">&#9733;</span>
@@ -174,7 +174,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen" id="s4">
   <div class="inner">
     <div class="step-header">
-      <div><p class="step-title">che colore<br>le perline?</p><p class="step-sub">scegli il colore</p></div>
+      <div><p class="step-title">CHE PERLINE<br>PREFERISCI?</p><p class="step-sub">scegli il colore</p></div>
       <div class="preview-box" id="prev-box4">
         <img class="prev-garment" id="prev4" src="" alt="preview">
         <span class="preview-star" id="pstar4a" style="display:none;">&#9733;</span>
@@ -192,7 +192,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
       <div class="bead-card" onclick="pick('bead','giallo',this)"><div class="bead-circle" style="background:#FFFB1F;border:1.5px solid #DDD;"></div><span class="bead-label">giallo</span></div>
     </div>
     <div class="bottom">
-      <button class="next-btn" id="btn4" onclick="showResult()">scopri la tua maglia &#9733;</button>
+      <button class="next-btn" id="btn4" onclick="showResult()">SCOPRI LA TUA STAR COMBO &#9733;</button>
       <button class="back-btn" onclick="go('s3')">&#8592; torna indietro</button>
       <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div></div>
     </div>
@@ -201,17 +201,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 
 <div class="screen" id="s5">
   <div class="inner">
-    <p class="step-title" style="width:100%;margin-bottom:12px;">la tua<br>maglia bb &#9733;</p>
+    <p class="step-title" style="width:100%;margin-bottom:12px;">LA TUA<br>STAR COMBO SS26 &#9733;</p>
     <div class="result-img-wrap">
       <div class="result-garment-wrap" id="result-wrap">
         <img id="result-img" src="" alt="la tua maglia" style="display:block;">
         <canvas id="result-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:2;"></canvas>
       </div>
     </div>
-    <p class="result-name" id="res-name"></p>
+    <input id="res-name" class="result-name-input" placeholder="PERSONALIZZA IL NOME" maxlength="40" autocomplete="off" spellcheck="false">
     <p class="result-combo" id="res-combo"></p>
     <div class="bottom" style="margin-top:12px;">
-      <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; salva il tuo capo bb project lab</button>
+      <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; CONDIVIDI E PROVA A VINCERE UN CAPO <span style="text-transform:lowercase;">bb</span></button>
       <button class="next-btn outline" onclick="restart()">rifai il quiz</button>
       <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
     </div>
@@ -481,7 +481,7 @@ function showResult(){
   };
   img.src=cd.img+'?v='+Date.now();
   if(img.complete && img.naturalWidth>0) drawResultCanvas(img);
-  document.getElementById('res-name').innerHTML=resultNames[ch.garment];
+  document.getElementById('res-name').value=resultNames[ch.garment];document.getElementById('res-name').placeholder='PERSONALIZZA IL NOME';
   document.getElementById('res-combo').textContent=ch.fabric.replace('_',' ')+' + perline '+ch.bead;
   go('s5');
 }
@@ -523,10 +523,11 @@ function saveStoryImage(){
   }
 
   // bb project lab watermark bottom
-  ctx.fillStyle='rgba(0,0,0,0.25)';
-  ctx.font='bold 36px -apple-system, sans-serif';
+  ctx.fillStyle='rgba(0,0,0,0.35)';
+  ctx.font='bold 42px -apple-system, sans-serif';
   ctx.textAlign='center';
-  ctx.fillText('bb project lab ★', storyW/2, storyH-80);
+  const customName=document.getElementById('res-name').value||'bb project lab';
+  ctx.fillText(customName+' ★', storyW/2, storyH-80);
 
   // Download
   try {
