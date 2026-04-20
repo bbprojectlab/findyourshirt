@@ -72,6 +72,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
   <div class="inner">
     <div style="width:100%;margin-bottom:8px;">
       <div class="brand-name">SCEGLI LE NUOVE<br>STAR COMBO<br>SS26</div>
+      <div class="stars-row">&#9733;</div>
       
       
     </div>
@@ -87,7 +88,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 <div class="screen" id="s1">
   <div class="inner">
     <div class="step-header">
-      <div><p class="step-title">COSA INDOSSEREI<br>QUESTA ESTATE?</p><p class="step-sub">SCEGLI IL MODELLO</p></div>
+      <div><p class="step-title">COSA INDOSSERAI<br>QUESTA ESTATE?</p><p class="step-sub">SCEGLI IL MODELLO</p></div>
     </div>
     <div class="garment-grid">
       <div class="garment-card" onclick="pickGarment('canotta',this)">
@@ -211,7 +212,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <p class="result-name" id="res-name"></p>
     <p class="result-combo" id="res-combo"></p>
     <div class="bottom" style="margin-top:12px;">
-      <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; CONDIVIDI E PROVA A VINCERE UN CAPO <span style="text-transform:lowercase;">bb</span></button>
+      <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; CONDIVIDI E PROVA A<br>VINCERE UN CAPO <span style="text-transform:lowercase;">bb</span> &#9733;</button>
       <button class="next-btn outline" onclick="restart()">rifai il quiz</button>
       <div class="dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
     </div>
@@ -502,11 +503,12 @@ function saveStoryImage(){
   ctx.fillStyle='#FFFFFF';
   ctx.fillRect(0,0,storyW,storyH);
 
-  // Top title
+  // Top title — same style as step-title
   ctx.fillStyle='#1C1C1C';
-  ctx.font='bold 52px -apple-system, Arial, sans-serif';
-  ctx.textAlign='center';
-  ctx.fillText('LA TUA STAR COMBO SS26', storyW/2, 140);
+  ctx.font='900 72px -apple-system, Arial, sans-serif';
+  ctx.textAlign='left';
+  ctx.fillText('LA TUA', 80, 160);
+  ctx.fillText('STAR COMBO SS26 ★', 80, 250);
 
   // Draw garment slightly lower — garment takes ~60% of width
   const gW=Math.round(storyW*0.60);
@@ -528,6 +530,27 @@ function saveStoryImage(){
     ctx.drawImage(rc, gX, gY, gW, gH);
   }
 
+  // Bottom: logo + @bb.projectlab
+  const logoImg=new Image();
+  logoImg.onload=function(){
+    const lh=80;
+    const lw=Math.round(lh*(logoImg.naturalWidth/logoImg.naturalHeight||1));
+    const ly=storyH-120;
+    const lx=80;
+    ctx.drawImage(logoImg, lx, ly, lw, lh);
+    ctx.fillStyle='rgba(0,0,0,0.5)';
+    ctx.font='500 42px -apple-system, Arial, sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText('@bb.projectlab', lx+lw+24, ly+lh*0.65);
+    triggerDownload();
+  };
+  logoImg.onerror=function(){ triggerDownload(); };
+  fetch('img/logo_bb.png')
+    .then(r=>r.blob())
+    .then(blob=>{ logoImg.src=URL.createObjectURL(blob); })
+    .catch(()=>triggerDownload());
+
+  function triggerDownload(){
   // Download
   try {
     finalCanvas.toBlob(function(blob){
@@ -544,6 +567,7 @@ function saveStoryImage(){
   } catch(e){
     alert('Fai uno screenshot per salvare la tua maglia!');
   }
+  } // end triggerDownload
 }
 
 function restart(){
