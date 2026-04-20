@@ -45,8 +45,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .bead-card.selected{border-color:var(--red);}
 .bead-circle{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);}
 .bead-label{font-size:9px;font-weight:600;color:var(--dark);text-transform:uppercase;letter-spacing:0.04em;}
-.result-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}
-.result-garment-wrap{position:relative;display:inline-block;line-height:0;}
+.result-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;overflow:visible;}
+.result-garment-wrap{position:relative;display:inline-block;line-height:0;overflow:visible;}
 .result-garment-wrap img{width:min(220px,56vw);filter:drop-shadow(0 8px 28px rgba(0,0,0,0.2));display:block;}
 .result-star-svg{position:absolute;pointer-events:none;transform:translate(-50%,-50%);z-index:2;overflow:visible;}
 .result-name{font-size:clamp(18px,5vw,26px);font-weight:900;color:var(--dark);text-transform:uppercase;letter-spacing:-0.02em;text-align:center;line-height:1;}
@@ -208,7 +208,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
         <canvas id="result-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:2;"></canvas>
       </div>
     </div>
-    <input id="res-name" class="result-name-input" placeholder="PERSONALIZZA IL NOME" maxlength="40" autocomplete="off" spellcheck="false">
+    <p class="result-name" id="res-name"></p>
     <p class="result-combo" id="res-combo"></p>
     <div class="bottom" style="margin-top:12px;">
       <button class="next-btn red show" id="share-btn" onclick="saveStoryImage()">&#9733; CONDIVIDI E PROVA A VINCERE UN CAPO <span style="text-transform:lowercase;">bb</span></button>
@@ -258,7 +258,7 @@ const beadColors={
   rosa:'#E0508A',giallo:'#FFFB1F'
 };
 
-const resultNames={canotta:'la tua canotta <span>bb</span>',top:'il tuo top <span>bb</span>',tshirt:'la tua t-shirt <span>bb</span>'};
+const resultNames={canotta:'CANOTTA SS26',top:'TOP SS26',tshirt:'T-SHIRT SS26'};
 
 // GOOGLE FORMS endpoint — sostituisci con il tuo link
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe9DwAHB4ETGQHyTfBjqO4vCrrCS8YwXZCtJYlyYykpq2bnIw/formResponse";
@@ -481,7 +481,7 @@ function showResult(){
   };
   img.src=cd.img+'?v='+Date.now();
   if(img.complete && img.naturalWidth>0) drawResultCanvas(img);
-  document.getElementById('res-name').value=resultNames[ch.garment];document.getElementById('res-name').placeholder='PERSONALIZZA IL NOME';
+  document.getElementById('res-name').textContent=resultNames[ch.garment];
   document.getElementById('res-combo').textContent=ch.fabric.replace('_',' ')+' + perline '+ch.bead;
   go('s5');
 }
@@ -502,17 +502,23 @@ function saveStoryImage(){
   ctx.fillStyle='#FFFFFF';
   ctx.fillRect(0,0,storyW,storyH);
 
-  // Draw garment centered with shadow — garment takes ~55% of width
-  const gW=Math.round(storyW*0.55);
-  const gH=Math.round(gW*(garmentImg.naturalHeight/garmentImg.naturalWidth||1));
+  // Top title
+  ctx.fillStyle='#1C1C1C';
+  ctx.font='bold 52px -apple-system, Arial, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('LA TUA STAR COMBO SS26', storyW/2, 140);
+
+  // Draw garment slightly lower — garment takes ~60% of width
+  const gW=Math.round(storyW*0.60);
+  const gH=Math.round(gW*(garmentImg.naturalHeight/garmentImg.naturalWidth||1.2));
   const gX=Math.round((storyW-gW)/2);
-  const gY=Math.round((storyH-gH)/2);
+  const gY=Math.round((storyH-gH)/2)+80;
 
   // Shadow
   ctx.save();
   ctx.shadowColor='rgba(0,0,0,0.18)';
-  ctx.shadowBlur=60;
-  ctx.shadowOffsetY=20;
+  ctx.shadowBlur=80;
+  ctx.shadowOffsetY=30;
   ctx.drawImage(garmentImg,gX,gY,gW,gH);
   ctx.restore();
 
@@ -521,13 +527,6 @@ function saveStoryImage(){
   if(rc && rc.width>0){
     ctx.drawImage(rc, gX, gY, gW, gH);
   }
-
-  // bb project lab watermark bottom
-  ctx.fillStyle='rgba(0,0,0,0.35)';
-  ctx.font='bold 42px -apple-system, sans-serif';
-  ctx.textAlign='center';
-  const customName=document.getElementById('res-name').value||'bb project lab';
-  ctx.fillText(customName+' ★', storyW/2, storyH-80);
 
   // Download
   try {
