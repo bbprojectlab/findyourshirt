@@ -224,14 +224,14 @@ const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentData={
   canotta:{
     colors:[{key:'bianco',label:'bianco',imgSp:'img/canotta_sp.png',img:'img/canotta_sp.png'}],
-    stars:[{x:0.32,y:0.40},{x:0.64,y:0.40}]
+    stars:[{x:0.34,y:0.40},{x:0.62,y:0.40}]
   },
   top:{
     colors:[
       {key:'bianco',label:'bianco',imgSp:'img/top_bianco_sp.png',img:'img/top_bianco_sp.png'},
       {key:'nero',label:'nero',imgSp:'img/top_nero_sp.png',img:'img/top_nero_sp.png'}
     ],
-    stars:[{x:0.31,y:0.44},{x:0.65,y:0.44}]
+    stars:[{x:0.33,y:0.44},{x:0.63,y:0.44}]
   },
   tshirt:{
     colors:[
@@ -272,25 +272,35 @@ const FORM_FIELDS = {
 function submitToForm(){
   try {
     const base='https://docs.google.com/forms/d/e/1FAIpQLSe9DwAHB4ETGQHyTfBjqO4vCrrCS8YwXZCtJYlyYykpq2bnIw/formResponse';
-    const params=new URLSearchParams();
-    params.set('entry.305141719', ch.garment||'');
-    params.set('entry.1875587845', ch.color||'');
-    params.set('entry.1839610412', ch.fabric||'');
-    params.set('entry.1828558303', ch.bead||'');
-    params.set('submit','Submit');
-    let iframe=document.getElementById('form-iframe');
-    if(!iframe){iframe=document.createElement('iframe');iframe.id='form-iframe';iframe.name='form-iframe';iframe.style.display='none';document.body.appendChild(iframe);}
-    let form=document.getElementById('form-hidden');
-    if(form) form.remove();
-    form=document.createElement('form');
-    form.id='form-hidden';
-    form.method='POST';
-    form.action=base;
-    form.target='form-iframe';
-    form.style.display='none';
-    params.forEach((v,k)=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;form.appendChild(i);});
-    document.body.appendChild(form);
-    form.submit();
+    const p=new URLSearchParams({
+      'entry.305141719': ch.garment||'',
+      'entry.1875587845': ch.color||'',
+      'entry.1839610412': ch.fabric||'',
+      'entry.1828558303': ch.bead||'',
+      'submit':'Submit'
+    });
+    // Use hidden form with iframe target
+    let ifr=document.getElementById('gf-ifr');
+    if(!ifr){
+      ifr=document.createElement('iframe');
+      ifr.id='gf-ifr';ifr.name='gf-ifr';
+      ifr.style.cssText='display:none;width:0;height:0;border:0;';
+      document.body.appendChild(ifr);
+    }
+    let frm=document.getElementById('gf-frm');
+    if(frm) frm.remove();
+    frm=document.createElement('form');
+    frm.id='gf-frm';frm.method='POST';
+    frm.action=base;frm.target='gf-ifr';
+    frm.style.display='none';
+    for(const [k,v] of p.entries()){
+      const inp=document.createElement('input');
+      inp.type='hidden';inp.name=k;inp.value=v;
+      frm.appendChild(inp);
+    }
+    document.body.appendChild(frm);
+    frm.submit();
+    setTimeout(()=>{if(frm.parentNode)frm.parentNode.removeChild(frm);},3000);
   } catch(e){}
 }
 
@@ -440,7 +450,7 @@ function drawResultCanvas(garmentImg){
     stars.forEach(star=>{
       const cx=star.x*iw;
       const cy=star.y*ih;
-      const size=iw*0.22;
+      const size = ch.garment==='tshirt' ? iw*0.17 : iw*0.22;
       ctx.save();
       ctx.translate(cx,cy);
       ctx.font=`${size}px serif`;
