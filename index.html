@@ -271,36 +271,17 @@ const FORM_FIELDS = {
 
 function submitToForm(){
   try {
-    const base='https://docs.google.com/forms/d/e/1FAIpQLSe9DwAHB4ETGQHyTfBjqO4vCrrCS8YwXZCtJYlyYykpq2bnIw/formResponse';
-    const p=new URLSearchParams({
-      'entry.305141719': ch.garment||'',
-      'entry.1875587845': ch.color||'',
-      'entry.1839610412': ch.fabric||'',
-      'entry.1828558303': ch.bead||'',
-      'submit':'Submit'
-    });
-    // Use hidden form with iframe target
-    let ifr=document.getElementById('gf-ifr');
-    if(!ifr){
-      ifr=document.createElement('iframe');
-      ifr.id='gf-ifr';ifr.name='gf-ifr';
-      ifr.style.cssText='display:none;width:0;height:0;border:0;';
-      document.body.appendChild(ifr);
-    }
-    let frm=document.getElementById('gf-frm');
-    if(frm) frm.remove();
-    frm=document.createElement('form');
-    frm.id='gf-frm';frm.method='POST';
-    frm.action=base;frm.target='gf-ifr';
-    frm.style.display='none';
-    for(const [k,v] of p.entries()){
-      const inp=document.createElement('input');
-      inp.type='hidden';inp.name=k;inp.value=v;
-      frm.appendChild(inp);
-    }
-    document.body.appendChild(frm);
-    frm.submit();
-    setTimeout(()=>{if(frm.parentNode)frm.parentNode.removeChild(frm);},3000);
+    fetch('https://script.google.com/macros/s/AKfycbww0SNjQDMWeFdmrKOfaOK5Djix_mEdXYB95KQ-QA7kcNX9Rm5Ewh8S4XSjQoZsniKAVg/exec', {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        capo: ch.garment||'',
+        colore: ch.color||'',
+        tessuto: ch.fabric||'',
+        perline: ch.bead||''
+      })
+    }).catch(()=>{});
   } catch(e){}
 }
 
