@@ -154,35 +154,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     </div>
     <div class="fabric-grid">
       <div class="fabric-card" onclick="pick('fabric','blue_jeans',this)">
-        <div class="fabric-swatch" style="background:linear-gradient(135deg,#4A7CB5,#1A3A60);"></div>
+        <div class="fabric-swatch" style="background:url(img/Blue_jeans.png) center/cover;"></div>
         <div><div class="fabric-name">Blue jeans</div><div class="fabric-desc">denim classico</div></div>
       </div>
       <div class="fabric-card" onclick="pick('fabric','light_jeans',this)">
-        <div class="fabric-swatch" style="background:linear-gradient(135deg,#A8C4E0,#5A90B0);"></div>
+        <div class="fabric-swatch" style="background:url(img/Light_jeans.png) center/cover;"></div>
         <div><div class="fabric-name">Light jeans</div><div class="fabric-desc">denim chiaro</div></div>
       </div>
       <div class="fabric-card" onclick="pick('fabric','argento',this)">
-        <div class="fabric-swatch" style="background:linear-gradient(135deg,#E8E8E8,#A8A8A8);"></div>
+        <div class="fabric-swatch" style="background:url(img/Argento.png) center/cover;"></div>
         <div><div class="fabric-name">Argento</div><div class="fabric-desc">metallizzato</div></div>
       </div>
       <div class="fabric-card" onclick="pick('fabric','arancione',this)">
-        <div class="fabric-swatch" style="background:linear-gradient(135deg,#FF9A3C,#C05010);"></div>
+        <div class="fabric-swatch" style="background:url(img/Arancione.png) center/cover;"></div>
         <div><div class="fabric-name">Arancione</div><div class="fabric-desc">vivace e caldo</div></div>
       </div>
       <div class="fabric-card" onclick="pick('fabric','red_leopard',this)">
-        <div class="fabric-swatch">
-          <svg width="48" height="48" viewBox="0 0 48 48" style="display:block;">
-            <rect width="48" height="48" fill="#C8202A"/>
-            <ellipse cx="10" cy="10" rx="4" ry="3" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="28" cy="8" rx="3" ry="4" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="18" cy="22" rx="5" ry="3" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="38" cy="20" rx="3" ry="5" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="8" cy="34" rx="4" ry="3" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="30" cy="36" rx="5" ry="3" fill="#8B0000" opacity="0.7"/>
-            <ellipse cx="44" cy="10" rx="3" ry="4" fill="#8B0000" opacity="0.7"/>
-          </svg>
-        </div>
+        <div class="fabric-swatch" style="background:url(img/Red_leopard.png) center/cover;"></div>
         <div><div class="fabric-name">Red leopard</div><div class="fabric-desc">animalier rosso</div></div>
+      <div class="fabric-card" onclick="pick('fabric','rosso',this)">
+        <div class="fabric-swatch" style="background:url(img/Rosso.png) center/cover;"></div>
+        <div><div class="fabric-name">Rosso</div><div class="fabric-desc">rosso brillante</div></div>
+      </div>
       </div>
     </div>
     <div class="bottom">
@@ -276,14 +269,14 @@ const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentData={
   canotta:{
     colors:[{key:'bianco',label:'bianco',imgSp:'img/canotta_sp.png',img:'img/canotta.png'}],
-    stars:[{x:0.29,y:0.38},{x:0.68,y:0.38}]
+    stars:[{x:0.29,y:0.48},{x:0.68,y:0.48}]
   },
   top:{
     colors:[
       {key:'bianco',label:'bianco',imgSp:'img/top_bianco_sp.png',img:'img/top_bianco.png'},
       {key:'nero',label:'nero',imgSp:'img/top_nero_sp.png',img:'img/top_nero.png'}
     ],
-    stars:[{x:0.29,y:0.42},{x:0.68,y:0.42}]
+    stars:[{x:0.29,y:0.48},{x:0.68,y:0.48}]
   },
   tshirt:{
     colors:[
@@ -291,13 +284,13 @@ const garmentData={
       {key:'blu',label:'blu',imgSp:'img/t-shirt_blu_sp.png',img:'img/t-shirt_blu.png'},
       {key:'rosso',label:'rosso',imgSp:'img/t-shirt_rosso_sp.png',img:'img/t-shirt_rosso.png'}
     ],
-    stars:[{x:0.36,y:0.37},{x:0.65,y:0.37}]
+    stars:[{x:0.36,y:0.43},{x:0.65,y:0.43}]
   }
 };
 
 const fabricColors={
   blue_jeans:'#3A6898',light_jeans:'#7AAAC8',argento:'#C0C0C0',
-  arancione:'#E07020',red_leopard:'#C8202A'
+  arancione:'#E07020',red_leopard:'#C8202A',rosso:'#CC1020'
 };
 const beadColors={
   bianco:'#E8E8E8',rosso:'#CC0000',turchese:'#20B2AA',
@@ -347,8 +340,8 @@ function updatePreviews(){
       sa.style.left=ax+'px';sa.style.top=ay+'px';
       sb.style.left=bx+'px';sb.style.top=by+'px';
       const beadStyle=beadStroke?`-webkit-text-stroke:2px ${beadStroke};text-stroke:2px ${beadStroke};`:'';
-      sa.style.cssText+=`;color:${starColor};font-size:20px;${beadStyle}`;
-      sb.style.cssText+=`;color:${starColor};font-size:20px;${beadStyle}`;
+      sa.style.cssText+=`;color:${starColor};font-size:26px;${beadStyle}`;
+      sb.style.cssText+=`;color:${starColor};font-size:26px;${beadStyle}`;
     }
   });
 }
@@ -422,7 +415,7 @@ function showResult(){
     const iw=img.offsetWidth, ih=img.offsetHeight;
     const s1=document.getElementById('rstar1');
     const s2=document.getElementById('rstar2');
-    const fs=Math.round(iw*0.13)+'px';
+    const fs=Math.round(iw*0.18)+'px';
     const beadStyle=`-webkit-text-stroke:2.5px ${beadStroke};`;
     [s1,s2].forEach((s,i)=>{
       s.style.cssText=`position:absolute;pointer-events:none;z-index:2;line-height:1;transform:translate(-50%,-50%);color:${starColor};font-size:${fs};${beadStyle}`;
