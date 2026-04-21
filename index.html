@@ -224,7 +224,7 @@ const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentData={
   canotta:{
     colors:[{key:'bianco',label:'bianco',imgSp:'img/canotta_sp.png',img:'img/canotta_sp.png'}],
-    stars:[{x:0.33,y:0.40},{x:0.63,y:0.40}]
+    stars:[{x:0.34,y:0.40},{x:0.62,y:0.40}]
   },
   top:{
     colors:[
@@ -459,13 +459,29 @@ function drawResultCanvas(garmentImg){
 }
 
 function drawStarPath(ctx, cx, cy, outerR, innerR, points){
+  // Rounded star using bezier curves
   ctx.beginPath();
+  const step = Math.PI / points;
+  const curve = 0.25; // roundness factor
   for(let i=0;i<points*2;i++){
-    const r=i%2===0?outerR:innerR;
-    const angle=(i*Math.PI/points)-Math.PI/2;
-    const x=cx+r*Math.cos(angle);
-    const y=cy+r*Math.sin(angle);
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    const r = i%2===0 ? outerR : innerR;
+    const angle = (i * step) - Math.PI/2;
+    const nextR = (i+1)%2===0 ? outerR : innerR;
+    const nextAngle = ((i+1)*step) - Math.PI/2;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    const nx = cx + nextR * Math.cos(nextAngle);
+    const ny = cy + nextR * Math.sin(nextAngle);
+    const cpR = (r + nextR) * 0.5;
+    const cpAngle = (angle + nextAngle) * 0.5;
+    const cpx = cx + cpR * Math.cos(cpAngle);
+    const cpy = cy + cpR * Math.sin(cpAngle);
+    if(i===0) ctx.moveTo(x,y);
+    ctx.quadraticCurveTo(
+      cx + (cpx-cx)*(1-curve) + (x-cx)*curve*0.3,
+      cy + (cpy-cy)*(1-curve) + (y-cy)*curve*0.3,
+      (x+nx)*0.5, (y+ny)*0.5
+    );
   }
   ctx.closePath();
 }
@@ -506,49 +522,82 @@ function saveStoryImage(){
   ctx.fillStyle='#1C1C1C';
   ctx.font='900 72px -apple-system, Arial, sans-serif';
   ctx.textAlign='left';
-  ctx.fillText('LA TUA', 80, 160);
-  ctx.fillText('STAR COMBO SS26 ★', 80, 250);
+  ctx.fillText('LA TUA', 80, 300);
+  ctx.fillText('STAR COMBO SS26 ★', 80, 400);
 
   // Draw garment slightly lower — garment takes ~60% of width
   const gW=Math.round(storyW*0.60);
   const gH=Math.round(gW*(garmentImg.naturalHeight/garmentImg.naturalWidth||1.2));
   const gX=Math.round((storyW-gW)/2);
-  const gY=Math.round((storyH-gH)/2)+80;
+  const gY=Math.round((storyH-gH)/2)+140;
 
-  // Shadow
+  // Shadow pink
   ctx.save();
-  ctx.shadowColor='rgba(0,0,0,0.18)';
-  ctx.shadowBlur=80;
-  ctx.shadowOffsetY=30;
+  ctx.shadowColor='#FDCCE3';
+  ctx.shadowBlur=90;
+  ctx.shadowOffsetY=20;
   ctx.drawImage(garmentImg,gX,gY,gW,gH);
   ctx.restore();
 
-  // Draw stars from result-canvas scaled to same garment area
-  const rc=document.getElementById('result-canvas');
-  if(rc && rc.width>0){
-    ctx.drawImage(rc, gX, gY, gW, gH);
-  }
-
-  // Bottom: logo + @bb.projectlab
-  const logoImg=new Image();
-  logoImg.onload=function(){
-    const lh=80;
-    const lw=Math.round(lh*(logoImg.naturalWidth/logoImg.naturalHeight||1));
-    const ly=storyH-120;
-    const lx=80;
-    ctx.drawImage(logoImg, lx, ly, lw, lh);
-    ctx.fillStyle='rgba(0,0,0,0.5)';
-    ctx.font='500 42px -apple-system, Arial, sans-serif';
-    ctx.textAlign='left';
-    ctx.textAlign='right';
-    ctx.fillText('@bb.projectlab', storyW-80, ly+lh*0.65);
-    triggerDownload();
-  };
-  logoImg.onerror=function(){ triggerDownload(); };
-  fetch('img/logo_bb.png')
+  // Draw stars directly on story canvas at full quality
+  const gd2=garmentData[ch.garment];
+  const stars2=gd2.stars;
+  const starSize2 = ch.garment==='tshirt' ? gW*0.17 : gW*0.22;
+  fetch(fabricImgs[ch.fabric])
     .then(r=>r.blob())
-    .then(blob=>{ logoImg.src=URL.createObjectURL(blob); })
-    .catch(()=>triggerDownload());
+    .then(blob=>{
+      const furl=URL.createObjectURL(blob);
+      const fimg=new Image();
+      fimg.onload=function(){
+        stars2.forEach(star=>{
+          const sx=gX+star.x*gW;
+          const sy=gY+star.y*gH;
+          const sz=starSize2;
+          ctx.save();
+          ctx.translate(sx,sy);
+          ctx.save();
+          drawStarPath(ctx,0,0,sz*0.48,sz*0.20,5);
+          ctx.clip();
+          ctx.drawImage(fimg,-sz*0.52,-sz*0.52,sz*1.04,sz*1.04);
+          ctx.restore();
+          if(ch.bead){
+            ctx.strokeStyle=beadColors[ch.bead];
+            ctx.lineWidth=sz*0.07;
+            ctx.lineJoin='round';
+            ctx.lineCap='round';
+            drawStarPath(ctx,0,0,sz*0.48,sz*0.20,5);
+            ctx.stroke();
+          }
+          ctx.restore();
+        });
+        URL.revokeObjectURL(furl);
+        doLogoAndDownload();
+      };
+      fimg.src=furl;
+    })
+    .catch(()=>doLogoAndDownload());
+
+  function doLogoAndDownload(){
+
+    const logoImg2=new Image();
+    logoImg2.onload=function(){
+      const lh=90;
+      const lw=Math.round(lh*(logoImg2.naturalWidth/logoImg2.naturalHeight||1));
+      const ly=storyH-150;
+      const lx=80;
+      ctx.drawImage(logoImg2, lx, ly, lw, lh);
+      ctx.fillStyle='rgba(0,0,0,0.5)';
+      ctx.font='500 44px -apple-system, Arial, sans-serif';
+      ctx.textAlign='right';
+      ctx.fillText('@bb.projectlab', storyW-80, ly+lh*0.7);
+      triggerDownload();
+    };
+    logoImg2.onerror=function(){ triggerDownload(); };
+    fetch('img/logo_bb.png')
+      .then(r=>r.blob())
+      .then(blob=>{ logoImg2.src=URL.createObjectURL(blob); })
+      .catch(()=>triggerDownload());
+  } // end doLogoAndDownload
 
   function triggerDownload(){
   // Download
