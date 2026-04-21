@@ -205,7 +205,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
     <div class="result-img-wrap">
       <div class="result-garment-wrap" id="result-wrap">
         <img id="result-img" src="" alt="la tua maglia" style="display:block;">
-        <canvas id="result-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:2;"></canvas>
+        <div id="result-stars" style="position:absolute;inset:0;pointer-events:none;z-index:2;"></div>
+        <canvas id="result-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;display:none;"></canvas>
       </div>
     </div>
     <p class="result-name" id="res-name"></p>
@@ -224,7 +225,7 @@ const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentData={
   canotta:{
     colors:[{key:'bianco',label:'bianco',imgSp:'img/canotta_sp.png',img:'img/canotta_sp.png'}],
-    stars:[{x:0.34,y:0.40},{x:0.62,y:0.40}]
+    stars:[{x:0.35,y:0.40},{x:0.61,y:0.40}]
   },
   top:{
     colors:[
@@ -415,54 +416,7 @@ function backFromFabric(){
   if(gd.colors.length===1)go('s1');else go('s2');
 }
 
-function drawResultCanvas(garmentImg){
-  const canvas=document.getElementById('result-canvas');
-  const wrap=document.getElementById('result-wrap');
-  const iw=garmentImg.offsetWidth;
-  const ih=garmentImg.offsetHeight;
-  canvas.width=iw;
-  canvas.height=ih;
-  canvas.style.width=iw+'px';
-  canvas.style.height=ih+'px';
-  const ctx=canvas.getContext('2d');
-  ctx.clearRect(0,0,iw,ih);
 
-  const gd=garmentData[ch.garment];
-  const stars=gd.stars;
-  const fabricImg=new Image();
-  fabricImg.crossOrigin='anonymous';
-  fabricImg.onload=function(){
-    stars.forEach(star=>{
-      const cx=star.x*iw;
-      const cy=star.y*ih;
-      const size = ch.garment==='tshirt' ? iw*0.17 : iw*0.22;
-      ctx.save();
-      ctx.translate(cx,cy);
-      ctx.font=`${size}px serif`;
-      ctx.textAlign='center';
-      ctx.textBaseline='middle';
-      // Draw fabric texture clipped to star shape
-      ctx.save();
-      // Create star path for clipping
-      drawStarPath(ctx, 0, 0, size*0.45, size*0.18, 5);
-      ctx.clip();
-      ctx.drawImage(fabricImg, -size*0.5, -size*0.5, size, size);
-      ctx.restore();
-      // Draw bead stroke outline
-      if(ch.bead){
-        ctx.strokeStyle=beadColors[ch.bead];
-        ctx.lineWidth=size*0.06;
-        ctx.lineJoin='round';
-        drawStarPath(ctx, 0, 0, size*0.45, size*0.18, 5);
-        ctx.stroke();
-      }
-      ctx.restore();
-    });
-  };
-  fabricImg.src=fabricImgs[ch.fabric];
-}
-
-// Star SVG path: viewBox 448x428, drawn centered at 0,0 at given size
 function drawStarPath(ctx, cx, cy, size){
   // Scale from 448x428 viewBox to desired size, centered
   const sw=448, sh=428;
@@ -484,15 +438,47 @@ function showResult(){
   submitToForm();
   const cd=getColorData();
   const img=document.getElementById('result-img');
-  img.crossOrigin='anonymous';
-  img.onload=function(){
-    drawResultCanvas(img);
-  };
-  img.src=cd.img+'?v='+Date.now();
-  if(img.complete && img.naturalWidth>0) drawResultCanvas(img);
+  img.onload=function(){ placeResultStarsSVG(); };
+  img.src=cd.img;
+  if(img.complete && img.naturalWidth>0) setTimeout(placeResultStarsSVG,50);
   document.getElementById('res-name').textContent=resultNames[ch.garment];
   document.getElementById('res-combo').textContent=ch.fabric.replace('_',' ')+' + perline '+ch.bead;
   go('s5');
+}
+
+function placeResultStarsSVG(){
+  const img=document.getElementById('result-img');
+  const container=document.getElementById('result-stars');
+  const iw=img.offsetWidth;
+  const ih=img.offsetHeight;
+  const gd=garmentData[ch.garment];
+  const stars=gd.stars;
+  const sz=ch.garment==='tshirt'?iw*0.17:iw*0.22;
+  const fabricUrl=fabricImgs[ch.fabric];
+  const beadColor=ch.bead?beadColors[ch.bead]:null;
+  const strokeAttr=beadColor?`stroke="${beadColor}" stroke-width="32" stroke-linejoin="round"`:'';
+  container.innerHTML='';
+  stars.forEach((star,i)=>{
+    const cx=star.x*iw;
+    const cy=star.y*ih;
+    const sw=sz;
+    const sh=sz*(428/448);
+    const uid='rs'+i+Date.now();
+    const div=document.createElement('div');
+    div.style.cssText=\`position:absolute;left:\${cx}px;top:\${cy}px;width:\${sw}px;height:\${sh}px;transform:translate(-50%,-50%);z-index:2;\`;
+    div.innerHTML=\`<svg viewBox="0 0 448 428" width="\${sw}" height="\${sh}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
+      <defs>
+        <pattern id="p\${uid}" patternUnits="userSpaceOnUse" x="0" y="0" width="448" height="428">
+          <image href="\${fabricUrl}" x="0" y="0" width="448" height="428" preserveAspectRatio="xMidYMid slice"/>
+        </pattern>
+        <clipPath id="c\${uid}">
+          <path d="${STAR_PATH}"/>
+        </clipPath>
+      </defs>
+      <path d="${STAR_PATH}" fill="url(#p\${uid})" clip-path="url(#c\${uid})" \${strokeAttr}/>
+    </svg>\`;
+    container.appendChild(div);
+  });
 }
 
 function saveStoryImage(){
@@ -526,70 +512,72 @@ function saveStoryImage(){
 
   // Shadow pink
   ctx.save();
-  ctx.shadowColor='#EEEBE9';
+  ctx.shadowColor='rgba(0,0,0,0.20)';
   ctx.shadowBlur=90;
   ctx.shadowOffsetY=20;
   ctx.drawImage(garmentImg,gX,gY,gW,gH);
   ctx.restore();
 
-  // Draw stars directly on story canvas at full quality
+  // Draw stars on story canvas using Image
   const gd2=garmentData[ch.garment];
   const stars2=gd2.stars;
-  const starSize2 = ch.garment==='tshirt' ? gW*0.17 : gW*0.22;
-  fetch(fabricImgs[ch.fabric])
-    .then(r=>r.blob())
-    .then(blob=>{
-      const furl=URL.createObjectURL(blob);
-      const fimg=new Image();
-      fimg.onload=function(){
-        stars2.forEach(star=>{
-          const sx=gX+star.x*gW;
-          const sy=gY+star.y*gH;
-          const sz=starSize2;
-          ctx.save();
-          ctx.translate(sx,sy);
-          const ss1=drawStarPath(ctx,0,0,sz);
-          ctx.save();
-          ctx.clip(ss1);
-          ctx.drawImage(fimg,-sz*0.52,-sz*0.52,sz*1.04,sz*1.04);
-          ctx.restore();
-          if(ch.bead){
-            const ss2=drawStarPath(ctx,0,0,sz);
-            ctx.strokeStyle=beadColors[ch.bead];
-            ctx.lineWidth=sz*0.07;
-            ctx.lineJoin='round';
-            ctx.lineCap='round';
-            ctx.stroke(ss2);
-          }
-          ctx.restore();
-        });
-        URL.revokeObjectURL(furl);
-        doLogoAndDownload();
-      };
-      fimg.src=furl;
-    })
-    .catch(()=>doLogoAndDownload());
+  const starSize2=ch.garment==='tshirt'?gW*0.17:gW*0.22;
+  const fimg=new Image();
+  fimg.crossOrigin='anonymous';
+  fimg.onload=function(){
+    stars2.forEach(star=>{
+      const sx=gX+star.x*gW;
+      const sy=gY+star.y*gH;
+      const sz=starSize2;
+      ctx.save();
+      ctx.translate(sx,sy);
+      const ss1=drawStarPath(ctx,0,0,sz);
+      ctx.save();
+      ctx.clip(ss1);
+      ctx.drawImage(fimg,-sz*0.52,-sz*0.52,sz*1.04,sz*1.04);
+      ctx.restore();
+      if(ch.bead){
+        const ss2=drawStarPath(ctx,0,0,sz);
+        ctx.strokeStyle=beadColors[ch.bead];
+        ctx.lineWidth=sz*0.07;
+        ctx.lineJoin='round';
+        ctx.lineCap='round';
+        ctx.stroke(ss2);
+      }
+      ctx.restore();
+    });
+    doLogoAndDownload();
+  };
+  fimg.onerror=function(){ doLogoAndDownload(); };
+  fimg.src=fabricImgs[ch.fabric]+'?v='+Date.now();
 
   function doLogoAndDownload(){
-
     const logoImg2=new Image();
+    logoImg2.crossOrigin='anonymous';
     logoImg2.onload=function(){
       const lh=90;
       const lw=Math.round(lh*(logoImg2.naturalWidth/logoImg2.naturalHeight||1));
-      const ly=storyH-150;
+      const ly=storyH-160;
       const lx=80;
       ctx.drawImage(logoImg2, lx, ly, lw, lh);
-      ctx.fillStyle='rgba(0,0,0,0.5)';
-      ctx.font='500 44px -apple-system, Arial, sans-serif';
+      ctx.fillStyle='rgba(0,0,0,0.55)';
+      ctx.font='bold 44px -apple-system, Arial, sans-serif';
       ctx.textAlign='right';
-      ctx.fillText('@bb.projectlab', storyW-80, ly+lh*0.7);
+      ctx.fillText('@bb.projectlab', storyW-80, ly+lh*0.72);
       triggerDownload();
     };
-    logoImg2.onerror=function(){ triggerDownload(); };
-    fetch('img/logo_bb.png')
-      .then(r=>r.blob())
-      .then(blob=>{ logoImg2.src=URL.createObjectURL(blob); })
-      .catch(()=>triggerDownload());
+    logoImg2.onerror=function(){
+      // fallback: draw text logo if image fails
+      ctx.fillStyle='rgba(0,0,0,0.55)';
+      ctx.font='bold 60px -apple-system, Arial, sans-serif';
+      ctx.textAlign='left';
+      ctx.fillText('bb', 80, storyH-100);
+      ctx.font='bold 44px -apple-system, Arial, sans-serif';
+      ctx.textAlign='right';
+      ctx.fillText('@bb.projectlab', storyW-80, storyH-100);
+      triggerDownload();
+    };
+    logoImg2.src='img/logo_bb.png?v='+Date.now();
   } // end doLogoAndDownload
 
   function triggerDownload(){
