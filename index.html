@@ -9,9 +9,9 @@
 :root{--red:#E8193C;--bg:#EEEBE9;--white:#FFFFFF;--dark:#1C1C1C;--mid:#888;--light:#CCC;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;touch-action:manipulation;}
-.screen{position:absolute;inset:0;width:100%;height:100%;display:none;flex-direction:column;background:var(--bg);overflow:hidden;}
+.screen{position:absolute;inset:0;width:100%;height:100%;display:none;flex-direction:column;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
 .screen.active{display:flex;}
-.inner{flex:1;display:flex;flex-direction:column;align-items:center;padding:max(44px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom));height:100%;overflow:hidden;}
+.inner{flex:1;display:flex;flex-direction:column;align-items:center;padding:max(44px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom));min-height:100%;overflow:visible;}
 .brand-name{font-size:clamp(40px,12vw,64px);font-weight:900;color:var(--dark);letter-spacing:-0.03em;line-height:0.92;text-transform:uppercase;width:100%;}
 .brand-sub{font-size:14px;color:var(--mid);font-weight:400;letter-spacing:0.04em;margin-top:8px;}
 .stars-row{font-size:20px;color:var(--red);letter-spacing:8px;margin-top:6px;}
@@ -339,24 +339,26 @@ function hidePreviewStars(n){
 }
 
 function showPreviewStars(n, stars, beadColor){
-  const boxW=96;
-  const sz=starSizeForBox(boxW, ch.garment);
-  ['a','b'].forEach((s,i)=>{
-    const el=document.getElementById('pstar'+n+s);
+  var boxW=96;
+  var sz=starSizeForBox(boxW, ch.garment);
+  var sp='M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z';
+  ['a','b'].forEach(function(s,i){
+    var el=document.getElementById('pstar'+n+s);
     if(!el) return;
-    const strokeAttr=beadColor?`stroke="${beadColor}" stroke-width="28"`:'stroke="none"';
-    el.innerHTML=`<svg viewBox="0 0 448 428" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;overflow:visible;">
-      <defs>
-        <pattern id="tp${n}${s}" patternUnits="userSpaceOnUse" width="448" height="428">
-          <image href="${fabricImgs[ch.fabric]}" width="448" height="428" preserveAspectRatio="xMidYMid slice"/>
-        </pattern>
-        <clipPath id="cp${n}${s}">
-          <path d="M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z"/>
-        </clipPath>
-      </defs>
-      <path d="M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z"
-        clip-path="url(#cp${n}${s})" fill="url(#tp${n}${s})" ${strokeAttr} stroke-linejoin="round"/>
-    </svg>`;
+    var strokeAttr=beadColor?'stroke="'+beadColor+'" stroke-width="28"':'stroke="none"';
+    var uid='tp'+n+s;
+    var svg='<svg viewBox="0 0 448 428" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;overflow:visible;">'
+      +'<defs>'
+      +'<pattern id="'+uid+'" patternUnits="userSpaceOnUse" width="448" height="428">'
+      +'<image href="'+fabricImgs[ch.fabric]+'" width="448" height="428" preserveAspectRatio="xMidYMid slice"/>'
+      +'</pattern>'
+      +'<clipPath id="cp'+uid+'">'
+      +'<path d="'+sp+'"/>'
+      +'</clipPath>'
+      +'</defs>'
+      +'<path d="'+sp+'" clip-path="url(#cp'+uid+')" fill="url(#'+uid+')" '+strokeAttr+' stroke-linejoin="round"/>'
+      +'</svg>';
+    el.innerHTML=svg;
     el.style.display='block';
     el.style.position='absolute';
     el.style.left=(stars[i].x*boxW)+'px';
@@ -447,36 +449,43 @@ function showResult(){
 }
 
 function placeResultStarsSVG(){
-  const img=document.getElementById('result-img');
-  const container=document.getElementById('result-stars');
-  const iw=img.offsetWidth;
-  const ih=img.offsetHeight;
-  const gd=garmentData[ch.garment];
-  const stars=gd.stars;
-  const sz=ch.garment==='tshirt'?iw*0.17:iw*0.22;
-  const fabricUrl=fabricImgs[ch.fabric];
-  const beadColor=ch.bead?beadColors[ch.bead]:null;
-  const strokeAttr=beadColor?`stroke="${beadColor}" stroke-width="32" stroke-linejoin="round"`:'';
+  var img=document.getElementById('result-img');
+  var container=document.getElementById('result-stars');
+  var iw=img.offsetWidth;
+  var ih=img.offsetHeight;
+  var gd=garmentData[ch.garment];
+  var stars=gd.stars;
+  var sz=ch.garment==='tshirt'?iw*0.17:iw*0.22;
+  var fabricUrl=fabricImgs[ch.fabric];
+  var beadColor=ch.bead?beadColors[ch.bead]:null;
+  var sp='M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z';
   container.innerHTML='';
-  stars.forEach((star,i)=>{
-    const cx=star.x*iw;
-    const cy=star.y*ih;
-    const sw=sz;
-    const sh=sz*(428/448);
-    const uid='rs'+i+Date.now();
-    const div=document.createElement('div');
-    div.style.cssText=\`position:absolute;left:\${cx}px;top:\${cy}px;width:\${sw}px;height:\${sh}px;transform:translate(-50%,-50%);z-index:2;\`;
-    div.innerHTML=\`<svg viewBox="0 0 448 428" width="\${sw}" height="\${sh}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
-      <defs>
-        <pattern id="p\${uid}" patternUnits="userSpaceOnUse" x="0" y="0" width="448" height="428">
-          <image href="\${fabricUrl}" x="0" y="0" width="448" height="428" preserveAspectRatio="xMidYMid slice"/>
-        </pattern>
-        <clipPath id="c\${uid}">
-          <path d="${STAR_PATH}"/>
-        </clipPath>
-      </defs>
-      <path d="${STAR_PATH}" fill="url(#p\${uid})" clip-path="url(#c\${uid})" \${strokeAttr}/>
-    </svg>\`;
+  stars.forEach(function(star,i){
+    var cx=star.x*iw;
+    var cy=star.y*ih;
+    var sw=sz;
+    var sh=sz*(428/448);
+    var uid='rs'+i+Date.now();
+    var strokeAttr=beadColor?'stroke="'+beadColor+'" stroke-width="32" stroke-linejoin="round"':'';
+    var div=document.createElement('div');
+    div.style.position='absolute';
+    div.style.left=cx+'px';
+    div.style.top=cy+'px';
+    div.style.width=sw+'px';
+    div.style.height=sh+'px';
+    div.style.transform='translate(-50%,-50%)';
+    div.style.zIndex='2';
+    div.innerHTML='<svg viewBox="0 0 448 428" width="'+sw+'" height="'+sh+'" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">'
+      +'<defs>'
+      +'<pattern id="p'+uid+'" patternUnits="userSpaceOnUse" x="0" y="0" width="448" height="428">'
+      +'<image href="'+fabricUrl+'" x="0" y="0" width="448" height="428" preserveAspectRatio="xMidYMid slice"/>'
+      +'</pattern>'
+      +'<clipPath id="c'+uid+'">'
+      +'<path d="'+sp+'"/>'
+      +'</clipPath>'
+      +'</defs>'
+      +'<path d="'+sp+'" fill="url(#p'+uid+')" clip-path="url(#c'+uid+')" '+strokeAttr+'/>'
+      +'</svg>';
     container.appendChild(div);
   });
 }
