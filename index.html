@@ -225,14 +225,14 @@ const ch={garment:null,color:null,fabric:null,bead:null};
 const garmentData={
   canotta:{
     colors:[{key:'bianco',label:'bianco',imgSp:'img/canotta_sp.png',img:'img/canotta_sp.png'}],
-    stars:[{x:0.35,y:0.40},{x:0.61,y:0.40}]
+    stars:[{x:0.36,y:0.40},{x:0.60,y:0.40}]
   },
   top:{
     colors:[
       {key:'bianco',label:'bianco',imgSp:'img/top_bianco_sp.png',img:'img/top_bianco_sp.png'},
       {key:'nero',label:'nero',imgSp:'img/top_nero_sp.png',img:'img/top_nero_sp.png'}
     ],
-    stars:[{x:0.32,y:0.44},{x:0.64,y:0.44}]
+    stars:[{x:0.33,y:0.44},{x:0.63,y:0.44}]
   },
   tshirt:{
     colors:[
@@ -455,7 +455,7 @@ function placeResultStarsSVG(){
   var ih=img.offsetHeight;
   var gd=garmentData[ch.garment];
   var stars=gd.stars;
-  var sz=ch.garment==='tshirt'?iw*0.17:iw*0.22;
+  var sz=ch.garment==='tshirt'?iw*0.14:iw*0.18;
   var fabricUrl=fabricImgs[ch.fabric];
   var beadColor=ch.bead?beadColors[ch.bead]:null;
   var sp='M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z';
@@ -530,7 +530,7 @@ function saveStoryImage(){
   // Draw stars on story canvas using Image
   const gd2=garmentData[ch.garment];
   const stars2=gd2.stars;
-  const starSize2=ch.garment==='tshirt'?gW*0.17:gW*0.22;
+  const starSize2=ch.garment==='tshirt'?gW*0.14:gW*0.18;
   const fimg=new Image();
   fimg.crossOrigin='anonymous';
   fimg.onload=function(){
