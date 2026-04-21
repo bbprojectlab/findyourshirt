@@ -22,8 +22,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .step-header{width:100%;display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;gap:12px;}
 .step-title{font-size:clamp(22px,6.5vw,36px);font-weight:900;color:var(--dark);line-height:1;letter-spacing:-0.02em;text-transform:uppercase;}
 .step-sub{font-size:11px;color:var(--mid);letter-spacing:0.06em;text-transform:uppercase;width:100%;margin-bottom:clamp(6px,1.5vh,12px);}
-.preview-box{width:96px;height:96px;border-radius:14px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative;}
-.preview-box img.prev-garment{width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2));position:relative;z-index:1;}
+.preview-box{width:144px;height:144px;border-radius:14px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative;}
+.preview-box img.prev-garment{width:126px;height:126px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.2));position:relative;z-index:1;}
 .preview-star{position:absolute;z-index:2;pointer-events:none;transform:translate(-50%,-50%);display:none;width:20px;height:19px;}
 .garment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,2vw,10px);width:100%;margin:auto 0;}
 .color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,2vw,10px);width:100%;margin:auto 0;}
@@ -339,7 +339,7 @@ function hidePreviewStars(n){
 }
 
 function showPreviewStars(n, stars, beadColor){
-  var boxW=96;
+  var boxW=144;
   var sz=starSizeForBox(boxW, ch.garment);
   var sp='M203.701 14.6236C210.035 -4.87244 237.617 -4.87244 243.952 14.6236L282.283 132.595C285.116 141.314 293.241 147.217 302.408 147.217H426.451C446.95 147.217 455.473 173.449 438.889 185.498L338.537 258.408C331.12 263.797 328.016 273.348 330.849 282.067L369.181 400.038C375.515 419.534 353.201 435.747 336.617 423.697L236.264 350.787C228.848 345.399 218.805 345.399 211.388 350.787L111.036 423.697C94.4512 435.747 72.1371 419.534 78.4718 400.038L116.803 282.067C119.636 273.348 116.532 263.797 109.116 258.408L8.76339 185.498C-7.82097 173.449 0.702268 147.217 21.2017 147.217H145.244C154.412 147.217 162.537 141.314 165.369 132.595L203.701 14.6236Z';
   ['a','b'].forEach(function(s,i){
